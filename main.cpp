@@ -9,8 +9,6 @@
 #include <cilktools/cilkview.h>
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <algorithm>
 #include <cmath>
 #include <string.h>
 using namespace std;
@@ -20,6 +18,75 @@ using namespace std;
 int n;
 int *inputArray;
 int *outputArray;
+
+int binarySearch(int *array, int x, int lowerBound, int upperBound)
+{
+    int middle;
+
+    if (lowerBound > upperBound)
+    {
+        return -1;
+    }
+    
+    middle = (lowerBound + upperBound)/2;
+
+    if (array[middle] == x)
+    {
+        return middle;
+    }
+    else if (array[middle] < x)
+    {
+        return binarySearch(array, x, middle+1, upperBound);
+    }
+    else
+    {
+        return binarySearch(array, x, lowerBound, middle-1);
+    }
+}
+
+void parallelMerge(int *C, int *A, int *B, int na, int nb)
+{
+    if (na < nb)
+    {
+        cilk_spawn parallelMerge(C, B, A, nb, na);
+    }
+    else if (na == 1)
+    {
+        if (nb == 0)
+        {
+            C[0] = A[0];
+        }
+        else
+        {
+            C[0] = (A[0] < B[0]) ? A[0] : B[0];
+            C[1] = (A[0] < B[0]) ? B[0] : A[1];
+        }
+    }
+    else
+    {
+        int ma = na/2;
+        int mb = binarySearch(A[ma], B, nb);
+        cilk_spawn parallelMerge(C, A, B, ma, mb);
+        cilk_spawn parallelMerge(C+ma+mb, A+ma, B+mb, na-ma, nb-mb);
+        cilk_sync;
+    }
+
+}
+
+void parallelMergeSort(int leftIndex, int rightIndex)
+{
+    if ((rightIndex - leftIndex) == 1)
+    {
+        outputArray[leftIndex] = inputArray[leftIndex];
+    }
+    else
+    {
+        cilk_spawn parallelMergeSort(leftIndex, rightIndex/2);
+        cilk_spawn parallelMergeSort(leftIndex + rightIndex/2, rightIndex); 
+        cilk_sync;
+        parallelMerge();
+    }
+}
 
 void printArray()
 {
