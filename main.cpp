@@ -11,37 +11,33 @@
 #include <fstream>
 #include <cmath>
 #include <string.h>
+#include <stdlib.h>
 using namespace std;
 
 #define DEBUG 0 
 
-int n;
 int *inputArray;
 int *outputArray;
 
-int binarySearch(int *array, int x, int lowerBound, int upperBound)
+int binarySearch(int x, int *array, int upperBound)
 {
-    int middle;
+    int lowerBound = 0;
+    int position = (upperBound / 2);
 
-    if (lowerBound > upperBound)
+    while ((array[position] != x) && (lowerBound <= upperBound))
     {
-        return -1;
+        if (array[position] > x)
+        {
+            upperBound = position - 1;
+        }
+        else
+        {
+            lowerBound = position + 1;
+        }
+        position = (lowerBound + upperBound) / 2;
     }
-    
-    middle = (lowerBound + upperBound)/2;
 
-    if (array[middle] == x)
-    {
-        return middle;
-    }
-    else if (array[middle] < x)
-    {
-        return binarySearch(array, x, middle+1, upperBound);
-    }
-    else
-    {
-        return binarySearch(array, x, lowerBound, middle-1);
-    }
+    return position;
 }
 
 void parallelMerge(int *C, int *A, int *B, int na, int nb)
@@ -59,7 +55,7 @@ void parallelMerge(int *C, int *A, int *B, int na, int nb)
         else
         {
             C[0] = (A[0] < B[0]) ? A[0] : B[0];
-            C[1] = (A[0] < B[0]) ? B[0] : A[1];
+            C[1] = (A[0] < B[0]) ? B[0] : A[0];
         }
     }
     else
@@ -73,22 +69,24 @@ void parallelMerge(int *C, int *A, int *B, int na, int nb)
 
 }
 
-void parallelMergeSort(int leftIndex, int rightIndex)
+void parallelMergeSort(int *B, int *A, int n)
 {
-    if ((rightIndex - leftIndex) == 1)
+    if (n == 1)
     {
-        outputArray[leftIndex] = inputArray[leftIndex];
+        B[0] = A[0];
     }
     else
     {
-        cilk_spawn parallelMergeSort(leftIndex, rightIndex/2);
-        cilk_spawn parallelMergeSort(leftIndex + rightIndex/2, rightIndex); 
+        int *C = (int *)malloc(n * sizeof(int));
+        cilk_spawn parallelMergeSort(C, A, n/2);
+        cilk_spawn parallelMergeSort(C+n/2, A+n/2, n-n/2); 
         cilk_sync;
-        parallelMerge();
+        parallelMerge(B, C, C+n/2, n/2, n-n/2);
+        free(C);
     }
 }
 
-void printArray()
+void printArray(int n)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -109,6 +107,7 @@ int main(int argc, char** argv)
     int time1;
     int time2;
     int par_time;
+    int n;
     string buffer;
 
     if (argc <= 2) 
@@ -146,7 +145,7 @@ int main(int argc, char** argv)
     input.close();
 
 #if DEBUG == 1
-    printArray();
+    printArray(n);
 #endif
 
     /// Run the program
@@ -154,11 +153,12 @@ int main(int argc, char** argv)
 
     // Run Merge Sort
 
+    parallelMergeSort(outputArray, inputArray, n);
 
     time2 = __cilkview_getticks();
 
     par_time = time2-time1;
-    cout << "\nMedian Filter took " << par_time << " milliseconds." << endl;
+    cout << "\nParallel Merge Sort took " << par_time << " milliseconds." << endl;
 
     /// Write to output file
     ofstream outputFile (outputFilepath);
@@ -167,7 +167,8 @@ int main(int argc, char** argv)
         cerr << "Failed to open output file" << endl;
         return 1;   /// Error
     }
-   
+  
+    outputFile << n << endl;
     for (int i = 0; i < n; ++i)
     {
         outputFile << outputArray[i] << endl;
