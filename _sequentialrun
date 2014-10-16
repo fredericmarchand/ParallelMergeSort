@@ -1,0 +1,8 @@
+#!/bin/sh
+      
+./main input1 seqtemp1
+./main input2 seqtemp2
+./main input3 seqtemp3
+./main input4 seqtemp4
+./main input5 seqtemp5
+

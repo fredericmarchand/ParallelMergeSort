@@ -3,6 +3,7 @@
  * 
  * Frederic Marchand
  * 100817579
+ * Sequential Version of Parallel Merge Sort
  */
 
 #include <cilk/cilk.h>
@@ -16,11 +17,6 @@ using namespace std;
 
 #define NOALLOC 0 
 #define DEBUG 0 
-
-#if NOALLOC == 1
-#define ARRAY_A 1
-#define ARRAY_B 2
-#endif
 
 int *inputArray;
 int *outputArray;
@@ -51,7 +47,7 @@ void parallelMerge(int *C, int *A, int *B, int na, int nb)
 {
     if (na < nb)
     {
-        cilk_spawn parallelMerge(C, B, A, nb, na);
+        parallelMerge(C, B, A, nb, na);
     }
     else if (na == 0)
     {
@@ -62,14 +58,12 @@ void parallelMerge(int *C, int *A, int *B, int na, int nb)
         int ma = na/2;
         int mb = binarySearch(A[ma], B, 0, nb-1);
         C[ma + mb] = A[ma];
-        cilk_spawn parallelMerge(C, A, B, ma, mb);
+        parallelMerge(C, A, B, ma, mb);
         parallelMerge(C+ma+mb+1, A+ma+1, B+mb, na-ma-1, nb-mb);
-        cilk_sync;
     }
 
 }
 
-#if NOALLOC == 0
 void parallelMergeSort(int *B, int *A, int n)
 {
     if (n == 1)
@@ -79,40 +73,12 @@ void parallelMergeSort(int *B, int *A, int n)
     else
     {
         int *C = (int *) malloc(n * sizeof(int));
-        cilk_spawn parallelMergeSort(C,     A,     n/2);
+        parallelMergeSort(C,     A,     n/2);
         parallelMergeSort(C+n/2, A+n/2, n-n/2); 
-        cilk_sync;
         parallelMerge(B, C, C+n/2, n/2, n-n/2);
-        cilk_sync;
         free (C);
     }
 }
-#endif
-
-#if NOALLOC == 1
-void parallelMergeSort(int *A, int *B, int n, int AorB)
-{
-    if (n <= 1)
-    {
-        B[0] = A[0];
-    }
-    
-    if (AorB == ARRAY_A)
-    {
-        cilk_spawn parallelMergeSort(A, B, n/2, ARRAY_B);
-        parallelMergeSort(A+n/2, B+n/2, n-n/2, ARRAY_B); 
-        cilk_sync;
-        parallelMerge(A, B, B+n/2, n/2, n-n/2);
-    }
-    else
-    {
-        cilk_spawn parallelMergeSort(A, B, n/2, ARRAY_A);
-        parallelMergeSort(A+n/2, B+n/2, n-n/2, ARRAY_A); 
-        cilk_sync;
-        parallelMerge(B, A, A+n/2, n/2, n-n/2);
-    }
-}
-#endif
 
 void printArray(int n)
 {
@@ -180,11 +146,7 @@ int main(int argc, char** argv)
     time1 = __cilkview_getticks();
 
     // Run Merge Sort
-#if NOALLOC == 1
-    parallelMergeSort(inputArray, outputArray, n, ARRAY_A);
-#else
     parallelMergeSort(outputArray, inputArray, n);
-#endif
 
     time2 = __cilkview_getticks();
 
