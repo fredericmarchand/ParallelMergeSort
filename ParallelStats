@@ -1,0 +1,50 @@
+n :                        2500000
+Work :                     31,739,986,679 instructions
+Span :                     1,220,541,423 instructions
+Parallelism :              26.00
+
+n :                        5000000
+Work :                     66,050,399,162 instructions
+Span :                     2,436,693,990 instructions
+Parallelism :              27.11
+
+n :                        7500000
+Work :                     101,051,071,670 instructions
+Span :                     3,652,839,932 instructions
+Parallelism :              27.66
+
+n :                        10000000
+Work :                     137,241,436,878 instructions
+Span :                     4,869,023,100 instructions
+Parallelism :              28.19
+
+n :                        12000000
+Work :                     166,278,939,616 instructions
+Span :                     5,841,850,474 instructions
+Parallelism :              28.46
+
+n :                        14000000
+Work :                     195,376,865,315 instructions
+Span :                     6,814,820,614 instructions
+Parallelism :              28.67
+
+n :                        16000000
+Work :                     224,048,175,553 instructions
+Span :                     7,787,760,697 instructions
+Parallelism :              28.77
+
+n :                        18250000
+Work :                     258,027,746,757 instructions
+Span :                     8,882,250,787 instructions
+Parallelism :              29.05
+
+n :                        20250000
+Work :                     288,597,393,298 instructions
+Span :                     9,855,173,039 instructions
+Parallelism :              29.28
+
+n :                        22750000
+Work :                     326,315,965,877 instructions
+Span :                     11,071,337,434 instructions
+Parallelism :              29.47
+

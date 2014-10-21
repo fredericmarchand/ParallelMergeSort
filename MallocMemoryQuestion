@@ -1,0 +1,30 @@
+Question: How much total memory do the "malloc" calls in P_MergeSort allocate?
+
+The amount of memory allocated by malloc is O(nlogn).
+This is explained by:
+
+The first call allocates an array of size n.
+And each subsequent call allocates two arrays of half the size.
+
+This creates a binary tree.
+
+The tree has a height of log(n) and on each row the amount of data allocated is n.
+Therefore the amount of data allocated by malloc on each run is O(nlogn).
+
+|----------------------|
+|          n           |
+|----------------------|
+           /\
+          /  \
+|---------|  |---------| 
+|   n/2   |  |   n/2   |
+|---------|  |---------|
+    /\            /\
+   /  \          /  \
+|---||---|    |---||---|
+|n/4||n/4|    |n/4||n/4|
+|---||---|    |---||---|
+
+  .    .        .    .
+  .    .        .    .
+  .    .        .    .

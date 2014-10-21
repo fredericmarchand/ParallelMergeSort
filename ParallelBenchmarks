@@ -1,0 +1,59 @@
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 2500000 1SecondInput 1SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 1SecondInput 1SecondComputeOutput                         
+n: 2500000
+Parallel Merge Sort took 1017 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 5000000 2SecondInput 2SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 2SecondInput 2SecondComputeOutput                        
+n: 5000000
+Parallel Merge Sort took 2097 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 7500000 3SecondInput 3SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 3SecondInput 3SecondComputeOutput                        
+n: 7500000
+Parallel Merge Sort took 3133 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 10000000 4SecondInput 4SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 4SecondInput 4SecondComputeOutput                         
+n: 10000000
+Parallel Merge Sort took 4240 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 12000000 5SecondInput 5SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 5SecondInput 5SecondComputeOutput
+n: 12000000
+Parallel Merge Sort took 5154 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 14000000 6SecondInput 6SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 6SecondInput 6SecondComputeOutput                          
+n: 14000000
+Parallel Merge Sort took 6038 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 16000000 7SecondInput 7SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 7SecondInput 7SecondComputeOutput                         
+n: 16000000
+Parallel Merge Sort took 6970 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 18250000 8SecondInput 8SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 8SecondInput 8SecondComputeOutput                          
+n: 18250000
+Parallel Merge Sort took 8090 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 20250000 9SecondInput 9SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 9SecondInput 9SecondComputeOutput                          
+n: 20250000
+Parallel Merge Sort took 8938 milliseconds.
+
+
+➜  Comp4009A2 git:(master) ✗ python assignment2.py 22750000 10SecondInput 10SecondOutput
+➜  Comp4009A2 git:(master) ✗ ./main 10SecondInput 10SecondComputeOutput                          
+n: 22750000
+Parallel Merge Sort took 9932 milliseconds.
+
