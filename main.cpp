@@ -14,13 +14,7 @@
 #include <stdlib.h>
 using namespace std;
 
-#define NOALLOC 0 
-#define DEBUG 0 
-
-#if NOALLOC == 1
-#define ARRAY_A 1
-#define ARRAY_B 2
-#endif
+#define PRINTING 1 
 
 int *inputArray;
 int *outputArray;
@@ -69,7 +63,6 @@ void parallelMerge(int *C, int *A, int *B, int na, int nb)
 
 }
 
-#if NOALLOC == 0
 void parallelMergeSort(int *B, int *A, int n)
 {
     if (n == 1)
@@ -87,32 +80,6 @@ void parallelMergeSort(int *B, int *A, int n)
         free (C);
     }
 }
-#endif
-
-#if NOALLOC == 1
-void parallelMergeSort(int *A, int *B, int n, int AorB)
-{
-    if (n <= 1)
-    {
-        B[0] = A[0];
-    }
-    
-    if (AorB == ARRAY_A)
-    {
-        cilk_spawn parallelMergeSort(A, B, n/2, ARRAY_B);
-        parallelMergeSort(A+n/2, B+n/2, n-n/2, ARRAY_B); 
-        cilk_sync;
-        parallelMerge(A, B, B+n/2, n/2, n-n/2);
-    }
-    else
-    {
-        cilk_spawn parallelMergeSort(A, B, n/2, ARRAY_A);
-        parallelMergeSort(A+n/2, B+n/2, n-n/2, ARRAY_A); 
-        cilk_sync;
-        parallelMerge(B, A, A+n/2, n/2, n-n/2);
-    }
-}
-#endif
 
 void printArray(int n)
 {
@@ -172,29 +139,18 @@ int main(int argc, char** argv)
 
     input.close();
 
-#if DEBUG == 1
-    printArray(n);
-#endif
-
     /// Run the program
     time1 = __cilkview_getticks();
 
     // Run Merge Sort
-#if NOALLOC == 1
-    parallelMergeSort(inputArray, outputArray, n, ARRAY_A);
-#else
     parallelMergeSort(outputArray, inputArray, n);
-#endif
 
     time2 = __cilkview_getticks();
 
     par_time = time2-time1;
-    cout << "\nParallel Merge Sort took " << par_time << " milliseconds." << endl;
+    cout << "Parallel Merge Sort took " << par_time << " milliseconds." << endl;
 
-#if DEBUG == 2 
-    printArray(n);
-#endif
-
+#if PRINTING == 1
     /// Write to output file
     ofstream outputFile (outputFilepath);
     if (!outputFile.is_open())
@@ -206,14 +162,11 @@ int main(int argc, char** argv)
     outputFile << n << endl;
     for (int i = 0; i < n; ++i)
     {
-#if NOALLOC == 1
-        outputFile << inputArray[i] << endl;
-#else 
         outputFile << outputArray[i] << endl;
-#endif
     }
 
     outputFile.close();
+#endif
 
     freeMem();
 

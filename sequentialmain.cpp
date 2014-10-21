@@ -15,8 +15,7 @@
 #include <stdlib.h>
 using namespace std;
 
-#define NOALLOC 0 
-#define DEBUG 0 
+#define PRINTING 1 
 
 int *inputArray;
 int *outputArray;
@@ -138,10 +137,6 @@ int main(int argc, char** argv)
 
     input.close();
 
-#if DEBUG == 1
-    printArray(n);
-#endif
-
     /// Run the program
     time1 = __cilkview_getticks();
 
@@ -151,12 +146,9 @@ int main(int argc, char** argv)
     time2 = __cilkview_getticks();
 
     par_time = time2-time1;
-    cout << "\nParallel Merge Sort took " << par_time << " milliseconds." << endl;
+    cout << "Parallel Merge Sort took " << par_time << " milliseconds." << endl;
 
-#if DEBUG == 2 
-    printArray(n);
-#endif
-
+#if PRINTING == 1
     /// Write to output file
     ofstream outputFile (outputFilepath);
     if (!outputFile.is_open())
@@ -168,14 +160,11 @@ int main(int argc, char** argv)
     outputFile << n << endl;
     for (int i = 0; i < n; ++i)
     {
-#if NOALLOC == 1
-        outputFile << inputArray[i] << endl;
-#else 
         outputFile << outputArray[i] << endl;
-#endif
     }
 
     outputFile.close();
+#endif
 
     freeMem();
 
